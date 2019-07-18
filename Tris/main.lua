@@ -33,8 +33,6 @@ local terza_riga = {9,10,11}
 
 
 local myButtonEvent = function (event )
-  print(prima_riga[1])
-
   if turno%2 == 0 then
     descrizione.text="Turno colore: verde"
     mossaPrimoGiocatore(event.target.id)
@@ -44,6 +42,7 @@ local myButtonEvent = function (event )
   end
   turno = turno + 1
   verificaVincitore()
+  print(finita)
   if finita == 1 then
     local vittoria = display.newText( "La partita è finita in vittoria", larghezza/2, altezza, native.systemFont,25)
     vittoria:setFillColor(0,0,0)
@@ -276,13 +275,13 @@ end
       rimuovi(myButton4)
       seconda_riga[1]=1
     elseif casella == "5" then
-      prima_riga[2]=1
       myCircle5a:setFillColor(1,0,0,1)
       rimuovi(myButton5)
+      seconda_riga[2]=1
     elseif casella == "6" then
-      prima_riga[3]=1
       myCircle6a:setFillColor(1,0,0,1)
       rimuovi(myButton6)
+      seconda_riga[3]=1
     elseif casella == "7" then
       terza_riga[1]=1
       myCircle7a:setFillColor(1,0,0,1)
