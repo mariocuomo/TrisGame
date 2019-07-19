@@ -30,24 +30,48 @@ local messaggio
 local vittorieRosso=0;
 local vittorieVerde=0;
 local turnoGiocatore = 1
+
+local function cambiaTurnoGiocatore()
+  if turnoGiocatore == 1 then
+    turnoGiocatore = 2
+      descrizione.text="Turno colore verde"
+  else
+    turnoGiocatore = 1
+    descrizione.text="Turno colore rosso"
+  end
+end
+
 local function ricomincia(event)
   turno=0
   attivaTutti()
   resettaMosse()
+  cambiaTurnoGiocatore()
   messaggio.text=" "
-  descrizione.text="Turno colore: rosso"
   risultato.text = "rosso: " ..vittorieRosso.."   verde: " .. vittorieVerde
-  end
+end
 
-local myButtonEvent = function (event )
+
+
+local myButtonEvent = function (event)
+  if turnoGiocatore==1 then
     if turno%2 == 0 then
-      descrizione.text="Turno colore: verde"
+      descrizione.text="Turno colore verde"
       mossaPrimoGiocatore(event.target.id)
     else
-      descrizione.text="Turno colore: rosso"
+      descrizione.text="Turno colore rosso"
       mossaSecondoGiocatore(event.target.id)
     end
-    
+  else 
+    if turno%2 == 0 then
+      descrizione.text="Turno colore rosso"
+      mossaSecondoGiocatore(event.target.id)
+    else
+      descrizione.text="Turno colore verde"
+      mossaPrimoGiocatore(event.target.id)
+    end
+  end
+
+
   turno = turno + 1
   verificaVincitore()
   if finita == 1 then
@@ -57,8 +81,6 @@ local myButtonEvent = function (event )
     disattivaTuttiPulsanti()
     finita=0
     timer.performWithDelay(1000, ricomincia)
-    print(vittorieRosso)
-    print(vittorieVerde)
     return
   end
   if turno==9 then
@@ -290,7 +312,7 @@ function verificaVincitore()
     vittorieRosso=vittorieRosso+1
     return
   end
-  
+
   --verifica orizzontale
   if prima_riga[1]==prima_riga[2] and prima_riga[2]==prima_riga[3] and prima_riga[1]==2 then
     finita=1;
@@ -481,15 +503,15 @@ splashScreen.y = display.contentHeight/2
 
 disattivaTuttiPulsanti()
 local function removeSplash(event)
-splashScreen:removeSelf()
-splashScreen = nil
-attivaTutti()
-descrizione = display.newText( "Turno colore: rosso", larghezza/2, 40, native.systemFont,25)
-risultato = display.newText( "rosso: 0   verde: 0", larghezza/2, altezza+10, native.systemFont,20)
-descrizione:setFillColor(0,0,0)
-risultato:setFillColor(0,0,0)
-titolo = display.newText( "TRIS GAME", larghezza/2, 0, native.systemFont,30)
-titolo:setFillColor(0,0,0)
+  splashScreen:removeSelf()
+  splashScreen = nil
+  attivaTutti()
+  descrizione = display.newText( "Turno colore: rosso", larghezza/2, 40, native.systemFont,25)
+  risultato = display.newText( "rosso: 0   verde: 0", larghezza/2, altezza+10, native.systemFont,20)
+  descrizione:setFillColor(0,0,0)
+  risultato:setFillColor(0,0,0)
+  titolo = display.newText( "TRIS GAME", larghezza/2, 0, native.systemFont,30)
+  titolo:setFillColor(0,0,0)
 end 
 timer.performWithDelay(5000,removeSplash)
 
