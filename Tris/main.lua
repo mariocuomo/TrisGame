@@ -8,7 +8,7 @@
 -- Your code here
 local widget = require "widget"
 local composer = require "composer"
-
+local timer = require "timer"
 
 local larghezza = display.contentWidth
 local altezza = display.contentHeight
@@ -22,15 +22,28 @@ titolo:setFillColor(0,0,0)
 
 local descrizione = display.newText( "Turno colore: rosso", larghezza/2, 40, native.systemFont,25)
 descrizione:setFillColor(0,0,0)
+local risultato = display.newText( "rosso: 0   verde: 0", larghezza/2, altezza+10, native.systemFont,20)
+risultato:setFillColor(0,0,0)
+
+
 
 local turno=0;
 local finita=0;
 local prima_riga = {3,4,5}
 local seconda_riga = {6,7,8}
 local terza_riga = {9,10,11}
+local messaggio
+local vittorieRosso=0;
+local vittorieVerde=0;
 
-
-
+local function ricomincia(event)
+  turno=0
+  attivaTutti()
+  resettaMosse()
+  messaggio.text=" "
+  descrizione.text="Turno colore: rosso"
+  risultato.text = "rosso: " ..vittorieRosso.."   verde: " .. vittorieVerde
+  end
 
 local myButtonEvent = function (event )
   if turno%2 == 0 then
@@ -42,14 +55,24 @@ local myButtonEvent = function (event )
   end
   turno = turno + 1
   verificaVincitore()
-  print(finita)
   if finita == 1 then
-    local vittoria = display.newText( "La partita è finita in vittoria", larghezza/2, altezza, native.systemFont,25)
-    vittoria:setFillColor(0,0,0)
-    end
+    messaggio = display.newText( "La partita è finita in vittoria", larghezza/2, altezza-20, native.systemFont,25)
+    messaggio:setFillColor(0,0,0)
+    disattivaTuttiPulsanti()
+    finita=0
+    timer.performWithDelay(1000, ricomincia)
+    print(vittorieRosso)
+    print(vittorieVerde)
+    return
+  end
   if turno==9 then
-    local pareggio = display.newText( "La partita è finita in pareggio", larghezza/2, altezza, native.systemFont,25)
-    pareggio:setFillColor(0,0,0)
+    if finita == 0 then
+      messaggio = display.newText( "La partita è finita in pareggio", larghezza/2, altezza, native.systemFont,25)
+      messaggio:setFillColor(0,0,0)
+      disattivaTuttiPulsanti()
+      finita=0
+      timer.performWithDelay(1000, ricomincia)
+    end
   end  
 end
 local myButton1=widget.newButton(
@@ -112,7 +135,6 @@ local myButton4=widget.newButton(
     width = 80,
     height = 80,
     cornerRadius = 2,
-
   }
 )
 
@@ -236,112 +258,224 @@ myCircle9b:setFillColor(0,1,0,0)
 
 function verificaVincitore()
   --verifica orizzontale
-  if prima_riga[1]==prima_riga[2] and prima_riga[2]==prima_riga[3] then
+  if prima_riga[1]==prima_riga[2] and prima_riga[2]==prima_riga[3] and prima_riga[1]==1 then
     finita=1;
-  elseif seconda_riga[1]==seconda_riga[2] and seconda_riga[2]==seconda_riga[3] then
+    vittorieRosso=vittorieRosso+1
+    return
+  elseif seconda_riga[1]==seconda_riga[2] and seconda_riga[2]==seconda_riga[3] and seconda_riga[1]==1 then
     finita=1;
-  elseif terza_riga[1]==terza_riga[2] and terza_riga[2]==terza_riga[3] then
+    vittorieRosso=vittorieRosso+1
+    return
+  elseif terza_riga[1]==terza_riga[2] and terza_riga[2]==terza_riga[3] and terza_riga[1]==1 then
     finita=1;
-  --verifica verticale
-  elseif prima_riga[1]==seconda_riga[1] and seconda_riga[1]==terza_riga[1] then
+    vittorieRosso=vittorieRosso+1
+    return
+    --verifica verticale
+  elseif prima_riga[1]==seconda_riga[1] and seconda_riga[1]==terza_riga[1] and prima_riga[1]==1 then
     finita=1;
-  elseif prima_riga[2]==seconda_riga[2] and seconda_riga[2]==terza_riga[2] then
+    vittorieRosso=vittorieRosso+1
+    return
+  elseif prima_riga[2]==seconda_riga[2] and seconda_riga[2]==terza_riga[2] and prima_riga[2]==1 then
     finita=1;
-  elseif prima_riga[3]==seconda_riga[3] and seconda_riga[3]==terza_riga[3] then
+    vittorieRosso=vittorieRosso+1
+    return
+  elseif prima_riga[3]==seconda_riga[3] and seconda_riga[3]==terza_riga[3] and prima_riga[3]==1 then
     finita=1;
-  --verifica obliquo
-  elseif prima_riga[1]==seconda_riga[2] and seconda_riga[2]==terza_riga[3] then
+    vittorieRosso=vittorieRosso+1
+    return
+    --verifica obliquo
+  elseif prima_riga[1]==seconda_riga[2] and seconda_riga[2]==terza_riga[3] and prima_riga[1]==1 then
     finita=1;
-  elseif prima_riga[3]==seconda_riga[2] and seconda_riga[2]==terza_riga[1] then
+    vittorieRosso=vittorieRosso+1
+    return
+  elseif prima_riga[3]==seconda_riga[2] and seconda_riga[2]==terza_riga[1] and prima_riga[3]==1 then
     finita=1;
+    vittorieRosso=vittorieRosso+1
+    return
+  end
+  
+  --verifica orizzontale
+  if prima_riga[1]==prima_riga[2] and prima_riga[2]==prima_riga[3] and prima_riga[1]==2 then
+    finita=1;
+    vittorieVerde=vittorieVerde+1
+    return
+  elseif seconda_riga[1]==seconda_riga[2] and seconda_riga[2]==seconda_riga[3] and seconda_riga[1]==2 then
+    finita=1;
+    vittorieVerde=vittorieVerde+1
+    return
+  elseif terza_riga[1]==terza_riga[2] and terza_riga[2]==terza_riga[3] and terza_riga[1]==2 then
+    finita=1;
+    vittorieVerde=vittorieVerde+1
+    return
+    --verifica verticale
+  elseif prima_riga[1]==seconda_riga[1] and seconda_riga[1]==terza_riga[1] and prima_riga[1]==2 then
+    finita=1;
+    vittorieVerde=vittorieVerde+1
+    return
+  elseif prima_riga[2]==seconda_riga[2] and seconda_riga[2]==terza_riga[2] and prima_riga[2]==2 then
+    finita=1;
+    vittorieVerde=vittorieVerde+1
+    return
+  elseif prima_riga[3]==seconda_riga[3] and seconda_riga[3]==terza_riga[3] and prima_riga[3]==2 then
+    finita=1;
+    vittorieVerde=vittorieVerde+1
+    return
+    --verifica obliquo
+  elseif prima_riga[1]==seconda_riga[2] and seconda_riga[2]==terza_riga[3] and prima_riga[1]==2 then
+    finita=1;
+    vittorieVerde=vittorieVerde+1
+    return
+  elseif prima_riga[3]==seconda_riga[2] and seconda_riga[2]==terza_riga[1] and prima_riga[3]==2 then
+    finita=1;
+    vittorieVerde=vittorieVerde+1
+    return
   end
 end
 
-  function mossaPrimoGiocatore (casella)
-    if casella == "1" then
-      myCircle1a:setFillColor(1,0,0,1)
-      rimuovi(myButton1)
-      prima_riga[1]=1
-    elseif casella == "2" then
-      myCircle2a:setFillColor(1,0,0,1)
-      rimuovi(myButton2)
-      prima_riga[2]=1
-    elseif casella == "3" then
-      myCircle3a:setFillColor(1,0,0,1)
-      rimuovi(myButton3)
-      prima_riga[3]=1
-    elseif casella == "4" then
-      myCircle4a:setFillColor(1,0,0,1)
-      rimuovi(myButton4)
-      seconda_riga[1]=1
-    elseif casella == "5" then
-      myCircle5a:setFillColor(1,0,0,1)
-      rimuovi(myButton5)
-      seconda_riga[2]=1
-    elseif casella == "6" then
-      myCircle6a:setFillColor(1,0,0,1)
-      rimuovi(myButton6)
-      seconda_riga[3]=1
-    elseif casella == "7" then
-      terza_riga[1]=1
-      myCircle7a:setFillColor(1,0,0,1)
-      rimuovi(myButton7)
-    elseif casella == "8" then
-      terza_riga[2]=1
-      myCircle8a:setFillColor(1,0,0,1)
-      rimuovi(myButton8)
-    elseif casella == "9" then
-      terza_riga[3]=1
-      myCircle9a:setFillColor(1,0,0,1)
-      rimuovi(myButton9)
-    else
-      error("invalid operation")
-    end
-  end
-
-  function mossaSecondoGiocatore (casella)
-    if casella == "1" then
-      myCircle1b:setFillColor(0,1,0,1)
-      rimuovi(myButton1)
-      prima_riga[1]=2
-    elseif casella == "2" then
-      myCircle2b:setFillColor(0,1,0,1)
-      rimuovi(myButton2)
-      prima_riga[2]=2
-    elseif casella == "3" then
-      myCircle3b:setFillColor(0,1,0,1)
-      rimuovi(myButton3)
-      prima_riga[3]=2
-    elseif casella == "4" then
-      seconda_riga[1]=2
-      myCircle4b:setFillColor(0,1,0,1)
-      rimuovi(myButton4)
-    elseif casella == "5" then
-      seconda_riga[2]=2
-      myCircle5b:setFillColor(0,1,0,1)
-      rimuovi(myButton5)
-    elseif casella == "6" then
-      seconda_riga[3]=2
-      myCircle6b:setFillColor(0,1,0,1)
-      rimuovi(myButton6)
-    elseif casella == "7" then
-      terza_riga[1]=2
-      myCircle7b:setFillColor(0,1,0,1)
-      rimuovi(myButton7)
-    elseif casella == "8" then
-      terza_riga[2]=2
-      myCircle8b:setFillColor(0,1,0,1)
-      rimuovi(myButton8)
-    elseif casella == "9" then
-      terza_riga[3]=2
-      myCircle9b:setFillColor(0,1,0,1)
-      rimuovi(myButton9)
-    else
-      error("invalid operation")
-    end
-  end
 
 
-  function rimuovi(x)
-    display.remove(x)
+function mossaPrimoGiocatore (casella)
+  if casella == "1" then
+    myCircle1a:setFillColor(1,0,0,1)
+    rimuovi(myButton1)
+    prima_riga[1]=1
+  elseif casella == "2" then
+    myCircle2a:setFillColor(1,0,0,1)
+    rimuovi(myButton2)
+    prima_riga[2]=1
+  elseif casella == "3" then
+    myCircle3a:setFillColor(1,0,0,1)
+    rimuovi(myButton3)
+    prima_riga[3]=1
+  elseif casella == "4" then
+    myCircle4a:setFillColor(1,0,0,1)
+    rimuovi(myButton4)
+    seconda_riga[1]=1
+  elseif casella == "5" then
+    myCircle5a:setFillColor(1,0,0,1)
+    rimuovi(myButton5)
+    seconda_riga[2]=1
+  elseif casella == "6" then
+    myCircle6a:setFillColor(1,0,0,1)
+    rimuovi(myButton6)
+    seconda_riga[3]=1
+  elseif casella == "7" then
+    terza_riga[1]=1
+    myCircle7a:setFillColor(1,0,0,1)
+    rimuovi(myButton7)
+  elseif casella == "8" then
+    terza_riga[2]=1
+    myCircle8a:setFillColor(1,0,0,1)
+    rimuovi(myButton8)
+  elseif casella == "9" then
+    terza_riga[3]=1
+    myCircle9a:setFillColor(1,0,0,1)
+    rimuovi(myButton9)
+  else
+    error("invalid operation")
   end
+end
+
+function mossaSecondoGiocatore (casella)
+  if casella == "1" then
+    myCircle1b:setFillColor(0,1,0,1)
+    rimuovi(myButton1)
+    prima_riga[1]=2
+  elseif casella == "2" then
+    myCircle2b:setFillColor(0,1,0,1)
+    rimuovi(myButton2)
+    prima_riga[2]=2
+  elseif casella == "3" then
+    myCircle3b:setFillColor(0,1,0,1)
+    rimuovi(myButton3)
+    prima_riga[3]=2
+  elseif casella == "4" then
+    seconda_riga[1]=2
+    myCircle4b:setFillColor(0,1,0,1)
+    rimuovi(myButton4)
+  elseif casella == "5" then
+    seconda_riga[2]=2
+    myCircle5b:setFillColor(0,1,0,1)
+    rimuovi(myButton5)
+  elseif casella == "6" then
+    seconda_riga[3]=2
+    myCircle6b:setFillColor(0,1,0,1)
+    rimuovi(myButton6)
+  elseif casella == "7" then
+    terza_riga[1]=2
+    myCircle7b:setFillColor(0,1,0,1)
+    rimuovi(myButton7)
+  elseif casella == "8" then
+    terza_riga[2]=2
+    myCircle8b:setFillColor(0,1,0,1)
+    rimuovi(myButton8)
+  elseif casella == "9" then
+    terza_riga[3]=2
+    myCircle9b:setFillColor(0,1,0,1)
+    rimuovi(myButton9)
+  else
+    error("invalid operation")
+  end
+end
+
+function disattivaTuttiPulsanti()
+  rimuovi(myButton1);
+  rimuovi(myButton2);
+  rimuovi(myButton3);
+  rimuovi(myButton4);
+  rimuovi(myButton5);
+  rimuovi(myButton6);
+  rimuovi(myButton7);
+  rimuovi(myButton8);
+  rimuovi(myButton9);
+end
+
+function attivaTutti()
+  attiva(myButton1);
+  attiva(myButton2);
+  attiva(myButton3);
+  attiva(myButton4);
+  attiva(myButton5);
+  attiva(myButton6);
+  attiva(myButton7);
+  attiva(myButton8);
+  attiva(myButton9);
+end
+
+function resettaMosse()
+  prima_riga = {3,4,5}
+  seconda_riga = {6,7,8}
+  terza_riga = {9,10,11}
+
+  myCircle1a:setFillColor(1,0,0,0)
+  myCircle2a:setFillColor(1,0,0,0)
+  myCircle3a:setFillColor(1,0,0,0)
+  myCircle4a:setFillColor(1,0,0,0)
+  myCircle5a:setFillColor(1,0,0,0)
+  myCircle6a:setFillColor(1,0,0,0)
+  myCircle7a:setFillColor(1,0,0,0)
+  myCircle8a:setFillColor(1,0,0,0)
+  myCircle9a:setFillColor(1,0,0,0)
+
+  myCircle1b:setFillColor(0,1,0,0)
+  myCircle2b:setFillColor(0,1,0,0)
+  myCircle3b:setFillColor(0,1,0,0)
+  myCircle4b:setFillColor(0,1,0,0)
+  myCircle5b:setFillColor(0,1,0,0)
+  myCircle6b:setFillColor(0,1,0,0)
+  myCircle7b:setFillColor(0,1,0,0)
+  myCircle8b:setFillColor(0,1,0,0)
+  myCircle9b:setFillColor(0,1,0,0)
+
+end
+
+function attiva(x)
+  x.isVisible=true;
+end
+
+function rimuovi(x)
+  x.isVisible=false
+  --display.remove(x)
+end
+
+--prova--
