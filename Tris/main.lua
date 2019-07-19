@@ -20,12 +20,6 @@ display.setDefault("background", 1, 1, 1)
 local titolo = display.newText( "TRIS GAME", larghezza/2, 0, native.systemFont,30)
 titolo:setFillColor(0,0,0)
 
-local descrizione = display.newText( "Turno colore: rosso", larghezza/2, 40, native.systemFont,25)
-descrizione:setFillColor(0,0,0)
-local risultato = display.newText( "rosso: 0   verde: 0", larghezza/2, altezza+10, native.systemFont,20)
-risultato:setFillColor(0,0,0)
-
-
 
 local turno=0;
 local finita=0;
@@ -67,7 +61,7 @@ local myButtonEvent = function (event )
   end
   if turno==9 then
     if finita == 0 then
-      messaggio = display.newText( "La partita è finita in pareggio", larghezza/2, altezza, native.systemFont,25)
+      messaggio = display.newText( "La partita è finita in pareggio", larghezza/2, altezza-20, native.systemFont,25)
       messaggio:setFillColor(0,0,0)
       disattivaTuttiPulsanti()
       finita=0
@@ -478,4 +472,19 @@ function rimuovi(x)
   --display.remove(x)
 end
 
---prova--
+local splashScreen = display.newImage( "splashScreen.png")
+splashScreen.x = display.contentWidth/2
+splashScreen.y = display.contentHeight/2
+
+disattivaTuttiPulsanti()
+local function removeSplash(event)
+splashScreen:removeSelf()
+splashScreen = nil
+attivaTutti()
+descrizione = display.newText( "Turno colore: rosso", larghezza/2, 40, native.systemFont,25)
+risultato = display.newText( "rosso: 0   verde: 0", larghezza/2, altezza+10, native.systemFont,20)
+descrizione:setFillColor(0,0,0)
+risultato:setFillColor(0,0,0)
+end 
+timer.performWithDelay(5000,removeSplash)
+
