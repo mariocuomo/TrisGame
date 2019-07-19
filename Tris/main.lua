@@ -17,8 +17,8 @@ background.x = display.contentWidth/2
 background.y = display.contentHeight/2
 display.setDefault("background", 1, 1, 1)
 
-local titolo = display.newText( "TRIS GAME", larghezza/2, 0, native.systemFont,30)
-titolo:setFillColor(0,0,0)
+local titolo
+
 
 
 local turno=0;
@@ -29,7 +29,7 @@ local terza_riga = {9,10,11}
 local messaggio
 local vittorieRosso=0;
 local vittorieVerde=0;
-
+local turnoGiocatore = 1
 local function ricomincia(event)
   turno=0
   attivaTutti()
@@ -40,17 +40,19 @@ local function ricomincia(event)
   end
 
 local myButtonEvent = function (event )
-  if turno%2 == 0 then
-    descrizione.text="Turno colore: verde"
-    mossaPrimoGiocatore(event.target.id)
-  else
-    descrizione.text="Turno colore: rosso"
-    mossaSecondoGiocatore(event.target.id)
-  end
+    if turno%2 == 0 then
+      descrizione.text="Turno colore: verde"
+      mossaPrimoGiocatore(event.target.id)
+    else
+      descrizione.text="Turno colore: rosso"
+      mossaSecondoGiocatore(event.target.id)
+    end
+    
   turno = turno + 1
   verificaVincitore()
   if finita == 1 then
     messaggio = display.newText( "La partita è finita in vittoria", larghezza/2, altezza-20, native.systemFont,25)
+    descrizione.text = " "
     messaggio:setFillColor(0,0,0)
     disattivaTuttiPulsanti()
     finita=0
@@ -62,6 +64,7 @@ local myButtonEvent = function (event )
   if turno==9 then
     if finita == 0 then
       messaggio = display.newText( "La partita è finita in pareggio", larghezza/2, altezza-20, native.systemFont,25)
+      descrizione.text = " "
       messaggio:setFillColor(0,0,0)
       disattivaTuttiPulsanti()
       finita=0
@@ -485,6 +488,8 @@ descrizione = display.newText( "Turno colore: rosso", larghezza/2, 40, native.sy
 risultato = display.newText( "rosso: 0   verde: 0", larghezza/2, altezza+10, native.systemFont,20)
 descrizione:setFillColor(0,0,0)
 risultato:setFillColor(0,0,0)
+titolo = display.newText( "TRIS GAME", larghezza/2, 0, native.systemFont,30)
+titolo:setFillColor(0,0,0)
 end 
 timer.performWithDelay(5000,removeSplash)
 
